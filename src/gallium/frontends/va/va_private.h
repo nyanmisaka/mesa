@@ -251,6 +251,7 @@ typedef struct {
    struct vl_compositor_state cstate;
    vl_csc_matrix csc;
    mtx_t mutex;
+   cnd_t cond;
    char vendor_string[256];
 } vlVaDriver;
 
@@ -367,6 +368,7 @@ VAStatus vlVaBufferSetNumElements(VADriverContextP ctx, VABufferID buf_id, unsig
 VAStatus vlVaMapBuffer(VADriverContextP ctx, VABufferID buf_id, void **pbuf);
 VAStatus vlVaUnmapBuffer(VADriverContextP ctx, VABufferID buf_id);
 VAStatus vlVaDestroyBuffer(VADriverContextP ctx, VABufferID buffer_id);
+VAStatus vlVaSyncBuffer(VADriverContextP ctx, VABufferID buf_id, uint64_t timeout_ns);
 VAStatus vlVaBeginPicture(VADriverContextP ctx, VAContextID context, VASurfaceID render_target);
 VAStatus vlVaRenderPicture(VADriverContextP ctx, VAContextID context, VABufferID *buffers, int num_buffers);
 VAStatus vlVaEndPicture(VADriverContextP ctx, VAContextID context);

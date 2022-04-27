@@ -219,6 +219,73 @@ vlVaDestroyBuffer(VADriverContextP ctx, VABufferID buf_id)
    return VA_STATUS_SUCCESS;
 }
 
+#if VA_CHECK_VERSION(1, 9, 0)
+VAStatus
+vlVaSyncBuffer(VADriverContextP ctx, VABufferID buf_id, uint64_t timeout_ns)
+{
+   vlVaDriver *drv;
+   vlVaBuffer *buf;
+
+   if (!ctx)
+       return VA_STATUS_ERROR_INVALID_CONTEXT;
+
+   drv = VL_VA_DRIVER(ctx);
+   if (!drv)
+      return VA_STATUS_ERROR_INVALID_CONTEXT;
+
+   if (timeout_ns == VA_TIMEOUT_INFINITE) {
+       /* Common infinite wait case */
+       mtx_lock(&drv->mutex);
+       cnd_wait(&drv->cond, &drv->mutex);
+
+       buf = handle_table_get(drv->htab, buf_id);
+       if (!buf) {
+          mtx_unlock(&drv->mutex);
+          return VA_STATUS_ERROR_INVALID_BUFFER;
+       }
+
+       mtx_unlock(&drv->mutex);
+   } else {
+       /* timespecs for cnd_timedwait */
+       struct timespec current;
+       struct timespec expire;
+
+       /* We override the clock to monotonic when creating the condition
+        * variable. */
+       clock_gettime(CLOCK_MONOTONIC, &current);
+
+       /* calculating when to expire */
+       expire.tv_nsec = timeout_ns % 1000000000L;
+       expire.tv_sec = timeout_ns / 1000000000L;
+
+       expire.tv_nsec += current.tv_nsec;
+       expire.tv_sec += current.tv_sec;
+
+       /* expire.nsec now is a number between 0 and 1999999998 */
+       if (expire.tv_nsec > 999999999L) {
+           expire.tv_sec++;
+           expire.tv_nsec -= 1000000000L;
+       }
+
+       mtx_lock(&drv->mutex);
+       if (cnd_timedwait(&drv->cond, &drv->mutex, &expire) == thrd_timedout) {
+           mtx_unlock(&drv->mutex);
+           return VA_STATUS_ERROR_TIMEDOUT;
+       }
+
+       buf = handle_table_get(drv->htab, buf_id);
+       if (!buf) {
+          mtx_unlock(&drv->mutex);
+          return VA_STATUS_ERROR_INVALID_BUFFER;
+       }
+
+       mtx_unlock(&drv->mutex);
+   }
+
+   return VA_STATUS_SUCCESS;
+}
+#endif
+
 VAStatus
 vlVaBufferInfo(VADriverContextP ctx, VABufferID buf_id, VABufferType *type,
                unsigned int *size, unsigned int *num_elements)
