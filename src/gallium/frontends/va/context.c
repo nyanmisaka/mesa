@@ -171,7 +171,7 @@ VA_DRIVER_INIT_FUNC(VADriverContextP ctx)
    if (!vl_compositor_set_csc_matrix(&drv->cstate, (const vl_csc_matrix *)&drv->csc, 1.0f, 0.0f))
       goto error_csc_matrix;
    (void) mtx_init(&drv->mutex, mtx_plain);
-   (void) cond_init(&drv->cond);
+   (void) cnd_init(&drv->cond);
 
    ctx->pDriverData = (void *)drv;
    ctx->version_major = 0;
@@ -409,7 +409,7 @@ vlVaTerminate(VADriverContextP ctx)
    drv->pipe->destroy(drv->pipe);
    drv->vscreen->destroy(drv->vscreen);
    handle_table_destroy(drv->htab);
-   cond_destroy(&drv->cond);
+   cnd_destroy(&drv->cond);
    mtx_destroy(&drv->mutex);
    FREE(drv);
 
