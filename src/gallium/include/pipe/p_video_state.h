@@ -580,6 +580,8 @@ struct pipe_h265_enc_seq_param
    uint32_t ip_period;
    uint16_t pic_width_in_luma_samples;
    uint16_t pic_height_in_luma_samples;
+   uint16_t org_pic_width_in_luma_samples;
+   uint16_t org_pic_height_in_luma_samples;
    uint32_t chroma_format_idc;
    uint32_t bit_depth_luma_minus8;
    uint32_t bit_depth_chroma_minus8;

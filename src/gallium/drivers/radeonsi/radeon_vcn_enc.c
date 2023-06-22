@@ -297,17 +297,10 @@ static void radeon_vcn_enc_h264_get_param(struct radeon_encoder *enc,
 static void radeon_vcn_enc_hevc_get_cropping_param(struct radeon_encoder *enc,
                                                    struct pipe_h265_enc_picture_desc *pic)
 {
-   if (pic->seq.conformance_window_flag) {
-      enc->enc_pic.crop_left = pic->seq.conf_win_left_offset;
-      enc->enc_pic.crop_right = pic->seq.conf_win_right_offset;
-      enc->enc_pic.crop_top = pic->seq.conf_win_top_offset;
-      enc->enc_pic.crop_bottom = pic->seq.conf_win_bottom_offset;
-   } else {
-      enc->enc_pic.crop_left = 0;
-      enc->enc_pic.crop_right = (align(enc->base.width, 16) - enc->base.width) / 2;
-      enc->enc_pic.crop_top = 0;
-      enc->enc_pic.crop_bottom = (align(enc->base.height, 16) - enc->base.height) / 2;
-   }
+   enc->enc_pic.crop_left = 0;
+   enc->enc_pic.crop_right = (align(enc->base.width, 64) - pic->seq.org_pic_width_in_luma_samples) / 2;
+   enc->enc_pic.crop_top = 0;
+   enc->enc_pic.crop_bottom = (align(enc->base.height, 16) - pic->seq.org_pic_height_in_luma_samples) / 2;
 }
 
 static void radeon_vcn_enc_hevc_get_dbk_param(struct radeon_encoder *enc,

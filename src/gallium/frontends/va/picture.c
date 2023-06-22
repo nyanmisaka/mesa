@@ -1098,6 +1098,10 @@ vlVaEndPicture(VADriverContextP ctx, VAContextID context_id)
       coded_buf = context->coded_buf;
       if (u_reduce_video_profile(context->templat.profile) == PIPE_VIDEO_FORMAT_MPEG4_AVC)
          context->desc.h264enc.frame_num_cnt++;
+      else if (u_reduce_video_profile(context->templat.profile) == PIPE_VIDEO_FORMAT_HEVC) {
+         context->desc.h265enc.seq.org_pic_width_in_luma_samples = surf->templat.width;
+         context->desc.h265enc.seq.org_pic_height_in_luma_samples = surf->templat.height;
+      }
 
       /* keep other path the same way */
       if (!screen->get_video_param(screen, PIPE_VIDEO_PROFILE_UNKNOWN,
