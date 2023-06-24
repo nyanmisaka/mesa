@@ -451,8 +451,34 @@ static void radeon_uvd_enc_nalu_sps_hevc(struct radeon_uvd_encoder *enc)
    radeon_uvd_enc_code_fixed_bits(enc, enc->enc_pic.hevc_spec_misc.strong_intra_smoothing_enabled,
                                   1);
 
-   radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);
-
+   radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.vui_parameters_present_flag), 1);
+   if (enc->enc_pic.vui_info.vui_parameters_present_flag) {
+      /* aspect ratio present flag */
+      radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.flags.aspect_ratio_info_present_flag), 1);
+      if (enc->enc_pic.vui_info.flags.aspect_ratio_info_present_flag) {
+         radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.aspect_ratio_idc), 8);
+         if (enc->enc_pic.vui_info.aspect_ratio_idc == PIPE_H2645_EXTENDED_SAR) {
+            radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.sar_width), 16);
+            radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.sar_height), 16);
+         }
+      }
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* overscan info present flag */
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* video signal type present flag */
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* chroma loc info present flag */
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* neutral chroma indication flag */
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* field seq flag */
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* frame field info present flag */
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* default display windows flag */
+      /* vui timing info present flag */
+      radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.flags.timing_info_present_flag), 1);
+      if (enc->enc_pic.vui_info.flags.timing_info_present_flag) {
+         radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.num_units_in_tick), 32);
+         radeon_uvd_enc_code_fixed_bits(enc, (enc->enc_pic.vui_info.time_scale), 32);
+         radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);
+         radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);
+      }
+      radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);  /* bitstream restriction flag */
+   }
    radeon_uvd_enc_code_fixed_bits(enc, 0x0, 1);
 
    radeon_uvd_enc_code_fixed_bits(enc, 0x1, 1);

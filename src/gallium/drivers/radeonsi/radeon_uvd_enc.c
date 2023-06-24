@@ -80,6 +80,16 @@ static void radeon_uvd_enc_get_param(struct radeon_uvd_encoder *enc,
    enc->enc_pic.sample_adaptive_offset_enabled_flag = pic->seq.sample_adaptive_offset_enabled_flag;
    enc->enc_pic.pcm_enabled_flag = 0; /*HW not support PCM */
    enc->enc_pic.sps_temporal_mvp_enabled_flag = pic->seq.sps_temporal_mvp_enabled_flag;
+   enc->enc_pic.vui_info.vui_parameters_present_flag = pic->seq.vui_parameters_present_flag;
+   enc->enc_pic.vui_info.flags.aspect_ratio_info_present_flag =
+      pic->seq.vui_flags.aspect_ratio_info_present_flag;
+   enc->enc_pic.vui_info.flags.timing_info_present_flag =
+      pic->seq.vui_flags.timing_info_present_flag;
+   enc->enc_pic.vui_info.aspect_ratio_idc = pic->seq.aspect_ratio_idc;
+   enc->enc_pic.vui_info.sar_width = pic->seq.sar_width;
+   enc->enc_pic.vui_info.sar_height = pic->seq.sar_height;
+   enc->enc_pic.vui_info.num_units_in_tick = pic->seq.num_units_in_tick;
+   enc->enc_pic.vui_info.time_scale = pic->seq.time_scale;
 }
 
 static void flush(struct radeon_uvd_encoder *enc)

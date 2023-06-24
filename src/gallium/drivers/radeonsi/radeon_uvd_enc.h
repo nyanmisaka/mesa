@@ -303,6 +303,21 @@ typedef struct ruvd_enc_feedback_buffer_s {
    uint32_t feedback_data_size;
 } ruvd_enc_feedback_buffer_t;
 
+typedef struct ruvd_enc_vui_info_s
+{
+   uint32_t vui_parameters_present_flag;
+   struct {
+      uint32_t aspect_ratio_info_present_flag : 1;
+      uint32_t timing_info_present_flag : 1;
+   } flags;
+   uint32_t aspect_ratio_idc;
+   uint32_t sar_width;
+   uint32_t sar_height;
+   uint32_t num_units_in_tick;
+   uint32_t time_scale;
+}ruvd_enc_vui_info;
+
+
 typedef void (*radeon_uvd_enc_get_buffer)(struct pipe_resource *resource, struct pb_buffer **handle,
                                           struct radeon_surf **surface);
 
@@ -363,6 +378,7 @@ struct radeon_uvd_enc_pic {
    ruvd_enc_feedback_buffer_t fb_buf;
    ruvd_enc_intra_refresh_t intra_ref;
    ruvd_enc_encode_params_t enc_params;
+   ruvd_enc_vui_info vui_info;
 };
 
 struct radeon_uvd_encoder {
