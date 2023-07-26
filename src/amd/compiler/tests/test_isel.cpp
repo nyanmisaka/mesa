@@ -185,6 +185,7 @@ BEGIN_TEST(isel.sparse.clause)
    }
 END_TEST
 
+#if LLVM_VERSION_MAJOR >= 15
 BEGIN_TEST(isel.discard_early_exit.mrtz)
    QoShaderModuleCreateInfo vs = qoShaderModuleCreateInfoGLSL(VERTEX,
       void main() {}
@@ -233,6 +234,7 @@ BEGIN_TEST(isel.discard_early_exit.mrt0)
    pbld.add_vsfs(vs, fs);
    pbld.print_ir(VK_SHADER_STAGE_FRAGMENT_BIT, "Assembly");
 END_TEST
+#endif
 
 BEGIN_TEST(isel.s_bfe_mask_bits)
    QoShaderModuleCreateInfo cs = qoShaderModuleCreateInfoGLSL(COMPUTE,
