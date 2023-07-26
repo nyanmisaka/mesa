@@ -1657,9 +1657,7 @@ if draw_with_llvm
   llvm_optional_modules += ['lto']
 endif
 
-if with_amd_vk or with_gallium_radeonsi
-  _llvm_version = '>= 14.0.0'
-elif with_intel_clc
+if with_intel_clc or with_amd_vk or with_gallium_radeonsi
   _llvm_version = '>= 13.0.0'
 elif with_gallium_opencl
   _llvm_version = '>= 11.0.0'
