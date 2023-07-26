@@ -1353,7 +1353,8 @@ static struct pipe_screen *radeonsi_screen_create_impl(struct radeon_winsys *ws,
                           sscreen->info.is_pro_graphics);
       sscreen->use_ngg_culling = sscreen->use_ngg &&
                                  sscreen->info.max_render_backends >= 2 &&
-                                 !(sscreen->debug_flags & DBG(NO_NGG_CULLING));
+                                 !(sscreen->debug_flags & DBG(NO_NGG_CULLING)) &&
+                                 LLVM_VERSION_MAJOR >= 12; /* hangs on 11, see #4874 */
    }
 
    /* Only set this for the cases that are known to work, which are:
