@@ -115,6 +115,7 @@
 #include "shader_info.h"
 #include "ac_binary.h"
 #include "ac_gpu_info.h"
+#include "ac_llvm_build.h"
 #include "util/u_live_shader_cache.h"
 #include "util/u_queue.h"
 #include "si_pm4.h"
