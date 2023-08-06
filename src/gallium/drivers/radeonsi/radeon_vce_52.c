@@ -107,14 +107,20 @@ static void get_config_ext_param(struct rvce_encoder *enc)
 
 static void get_vui_param(struct rvce_encoder *enc, struct pipe_h264_enc_picture_desc *pic)
 {
-   enc->enc_pic.enable_vui = pic->enable_vui;
+   enc->enc_pic.enable_vui = pic->seq.vui_parameters_present_flag;
+   enc->enc_pic.vui.aspect_ratio_info_present_flag =
+      pic->seq.vui_flags.aspect_ratio_info_present_flag;
+   enc->enc_pic.vui.aspect_ratio_idc = pic->seq.aspect_ratio_idc;
+   enc->enc_pic.vui.sar_width = pic->seq.sar_width;
+   enc->enc_pic.vui.sar_height = pic->seq.sar_height;
    enc->enc_pic.vui.video_format = 0x00000005;
    enc->enc_pic.vui.color_prim = 0x00000002;
    enc->enc_pic.vui.transfer_char = 0x00000002;
    enc->enc_pic.vui.matrix_coef = 0x00000002;
-   enc->enc_pic.vui.timing_info_present_flag = 0x00000001;
-   enc->enc_pic.vui.num_units_in_tick = pic->rate_ctrl[0].frame_rate_den;
-   enc->enc_pic.vui.time_scale = pic->rate_ctrl[0].frame_rate_num * 2;
+   enc->enc_pic.vui.timing_info_present_flag =
+      pic->seq.vui_flags.timing_info_present_flag;
+   enc->enc_pic.vui.num_units_in_tick = pic->seq.num_units_in_tick;
+   enc->enc_pic.vui.time_scale = pic->seq.time_scale;
    enc->enc_pic.vui.fixed_frame_rate_flag = 0x00000001;
    enc->enc_pic.vui.bit_rate_scale = 0x00000004;
    enc->enc_pic.vui.cpb_size_scale = 0x00000006;
